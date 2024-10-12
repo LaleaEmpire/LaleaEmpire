@@ -6,10 +6,16 @@ import math
 
 def init():
     os.system('cls' if os.name == 'nt' else 'clear')
+    global MATK # Tutoria's ATK. Also the placeholder.
+    MATK = 3
+    global MHP # Tutoria's HP. Also the placeholder.
+    MHP = 28
+    global MDF # Tutoria's DF. Also the placeholder.
+    MDF = 2
     global saveplace
     saveplace = init
     global items
-    items = ["Poppy","M.Candy","B.Pie","G.Pudding","Ginger.Man","Blacoffee","Nice.Cream","ApriLobster","Burger","MonkeyTail","V.Delight","AvacadoToast","Sw'ore","LevvySteak"]
+    items = ["poppy","m.candy","b.pie","g.pudding","ginger.man","blacoffee","nice.cream","aprilobster","burger","monkeytail","v.delight","avacadotoast","sw'ore","levvysteak"]
     global xpgive
     xpgive = [2,3,5,6,22,150,25,18,22,30,35,340,40,46,52,700,1700,70,80,95,150,180,220,300,800] # 0-4 = Catacombs norm, 6-10 = Frostin norm,
     global xp # 12-14 = Calico norm, 17-21 = Vertica norm, 5 = Tutoria, 11 = Impact, 15 = norm Boarstle, 16 = geno Boarstle, 22 = Royal Guards, 23 = 3 Dancing Dogs,
@@ -78,13 +84,13 @@ def start():
     global name
     name=input("* WHAT SHALL IT BE? \n ") # Lets the player choose the name.
     time.sleep(1.5)
-    if name == "AILBHE":  
+    if name.casefold() == "ailbhe":  
         print("* EXCELLENT. ")
-    elif name == "ASTER" or name == "BONBON": # dont spoil the game.
+    elif name == "aster" or name == "bonbon": # dont spoil the game.
         print("* ! ")
         time.sleep(0.75)
         sys.exit()
-    elif name == "BIOME" or name == "MARS" or name == "TUTORIA" or name == "IMPACT":  print("* HOW FAMILIAR. ") # Special text that hints at some characters
+    elif name.casefold() == "biome" or name.casefold() == "mars" or name.casefold() == "tutoria" or name.casefold() == "impact":  print("* HOW FAMILIAR. ") # Special text that hints at some characters
     else:  print(f"* \"{name}\". WONDERFUL.")
     time.sleep(3)
 
@@ -159,7 +165,7 @@ def fallen1():
     print("Tutoria: 'Now, if you would like to follow me..")
     option1 = input("* Say 'Yes' or 'No' here. \n ") # this may or may not lead to the same place
     time.sleep(1.5)
-    if option1 == 'Yes':
+    if option1.casefold() == 'yes':
         print(f"Tutoria: 'And {name} is your name?'")
         time.sleep(1.5)
         print("Tutoria: 'Now, follow me to my home. Get adjusted to the puzzles.'")
@@ -192,8 +198,8 @@ def house():
     print("* Shall they go outside, into the kitchen, or to bed?")
     option1 = input(" ")
     time.sleep(3)
-    if option1 == 'outside': fallen2()
-    elif option1 == 'kitchen': kitchen()
+    if option1.casefold() == 'outside': fallen2()
+    elif option1.casefold() == 'kitchen': kitchen()
     else: bed()
 
 def fallen2(): # Speedrunners, hate me!
@@ -223,16 +229,16 @@ def FTO():
     time.sleep(1.5)
     print("* Attack, Act, Item or Mercy. \n Choose one.")
     FTOp = input("")
-    if FTOp == "Attack":
+    if FTOp.casefold() == "attack":
         time.sleep(1)
         Attack()
-    elif FTOp == "Act":
+    elif FTOp.casefold() == "act":
         time.sleep(1)
         Act()
-    elif FTOp == "Item":
+    elif FTOp.casefold() == "item":
         time.sleep(1)
         Item()
-    elif FTOp == "Mercy":
+    elif FTOp.casefold() == "mercy":
         time.sleep(1)
         Mercy()
     else:
@@ -244,6 +250,7 @@ def Attack():
 
 def Act():
     print("* For mercy, or for idiocy.")
+
 
 def Item():
     global hp
@@ -274,21 +281,27 @@ def Item():
     for i in items:
         if i in inventory and i == iFTO.casefold():
             hp += item_effects.get(i, 10) # Default to adding 10 if not found
-        else:
             FATK()
+        else:
+            FTO()
     
 
 
 def Mercy():
-    print("* Showing your benevolence.")
+    print("* Showing their benevolence.")
 
 def FATK():
-    print("* It is now their turn to fight you.")
+    global hp
+    global maxhp
+    global MATK
+    global df
+    print("* It is now the enemy's turn to fight them.")
     hp = hp - (MATK - df/5) # Undertale's Math..?
     time.sleep(1.5)
-    print("They dealt ", str(MATK - df/5), " damage.")
+    print("The enemy dealt ", str(MATK - df/5), " damage.")
     time.sleep(1.5)
-    print(f"* Your HP is now at {hp}.")
+    print(f"* Their HP is now at {hp}.")
+    time.sleep(1.5)
     if hp > 0:
         FTO()
     else:
