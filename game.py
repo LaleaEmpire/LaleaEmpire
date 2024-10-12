@@ -32,7 +32,7 @@ def init():
     hpcalc()
     global hp
     hp = maxhp # If it drops to 0, you lose
-    FTO()
+    start()
 
 def hpcalc():
     global maxhp
