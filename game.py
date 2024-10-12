@@ -3,7 +3,6 @@ import sys
 import os
 import math
 
-
 def init():
     os.system('cls' if os.name == 'nt' else 'clear')
     global MATK # Tutoria's ATK. Also the placeholder.
@@ -222,7 +221,7 @@ def fallen2(): # Speedrunners, hate me!
 def kitchen():
     time.sleep(2)
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("* The")
+    print("* The smell is stronger.")
 
 def bed():
     print("")
