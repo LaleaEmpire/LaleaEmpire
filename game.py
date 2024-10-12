@@ -295,6 +295,8 @@ def FATK():
         death()
 
 def death():
+    global hp
+    hp = maxhp
     global subroutine
     time.sleep(3)
     os.system('cls' if os.name == 'nt' else 'clear')
