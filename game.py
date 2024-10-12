@@ -132,11 +132,11 @@ def legend():
     print("* Long ago, Humans and Monsters lived in harmony, coexisting for a millennium.") # The story that is always told.
     time.sleep(2)
     print("* Then, tension grew too high.")
-    time.sleep(1.5)
-    print("* Humans and Monsters went to war. \n* After years of fighting, Humans won.")
-    time.sleep(1.5)
-    print("* The remaining Monsters were sealed under a mountain with the power of nine Human Souls.")
     time.sleep(2)
+    print("* Humans and Monsters went to war. \n* After years of fighting, Humans won.")
+    time.sleep(2)
+    print("* The remaining Monsters were sealed under a mountain with the power of nine Human Souls.")
+    time.sleep(3)
 
     os.system('cls' if os.name == 'nt' else 'clear')
     print("* Elo is the last to fall.")
@@ -181,7 +181,7 @@ def fallen1():
 def house():
     global saveplace
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("* It smells of pie. Chocolate, to be exact.") # Yvira no. (* Yvira yes.)
+    print("* It smells of pie. Caramel and Banana, to be exact.") # Ailbhe no. (* Ailbhe yes.)
     time.sleep(1.5)
     print("* Would you like to save?")
     option2 = input("(Yes / No) \n")
@@ -220,7 +220,9 @@ def fallen2(): # Speedrunners, hate me!
 
 
 def kitchen():
-    print("")
+    time.sleep(2)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("* The")
 
 def bed():
     print("")
