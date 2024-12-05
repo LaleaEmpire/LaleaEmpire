@@ -1,31 +1,62 @@
 import time
 import sys
 import os
+import random
 import math
 
 def init():
     os.system('cls' if os.name == 'nt' else 'clear')
-    global MATK # Tutoria's ATK. Also the placeholder.
+    print("* If you don't have a file named 'Lfile.txt' in the directory, add it.")
+    time.sleep(2)
+    global inventory
+    global subroutine
+    global equipped
+    global money
+    global file
+    file = open("Lfile.txt", "r")
+    if file.readline(2) == "": equipped = ["Stick", "Band-aid"] # 0 is weapon, 1 is def.
+    else: equipped = file.readline(2)
+    if file.readline(0) == "": subroutine = init 
+    else: subroutine = file.readline(0)
+    if file.readline(1) == "": inventory = ["poppy"]
+    else: inventory = file.readline(1) # Inventory
+    if file.readline(4) == "": money = 0
+    else: money = file.readline(4)
+    file.close()
+    global MATK # Tutoria's old ATK. Also the placeholder.
     MATK = 3
-    global MHP # Tutoria's HP. Also the placeholder.
+    global MHP # Tutoria's old HP. Also the placeholder.
     MHP = 28
-    global MDF # Tutoria's DF. Also the placeholder.
+    global MDF # Tutoria's old DF. Also the placeholder.
     MDF = 2
-    global saveplace
-    saveplace = init
+    areas = [house, fallen2]
     global items
     items = ["poppy","m.candy","b.pie","g.pudding","ginger.man","blacoffee","nice.cream","aprilobster","burger","monkeytail","v.delight","avacadotoast","sw'ore","levvysteak"]
     global xpgive
-    xpgive = [2,3,5,6,22,150,25,18,22,30,35,340,40,46,52,700,1700,70,80,95,150,180,220,300,800] # 0-4 = Catacombs norm, 6-10 = Frostin norm,
+    xpgive = [2,3,5,6,22,150,25,18,22,30,35,200,40,46,52,500,1500,70,80,95,150,180,220,300,800] # 0-4 = Catacombs norm, 6-10 = Frostin norm,
     global xp # 12-14 = Calico norm, 17-21 = Vertica norm, 5 = Tutoria, 11 = Impact, 15 = norm Boarstle, 16 = geno Boarstle, 22 = Royal Guards, 23 = 3 Dancing Dogs,
     xp=0 # 24 = Levvy.
     lvcalc()
+    global moneygive
+    moneygive = [2,2,2,4,5,0,35,15,12,30,20,0,0,20,30,0,0,40,45,60,60,70,100,105,0]
+    global battlename
+    battlename = ["Anxa","Ribbo","Impri","Plumbu","Dant","Tutoria","Stagtul","Oh Deer","Batty","Siel","Sbanta","Impact","Metta","Blobber","Sandmar","Boarstle","Boarstle the Brave","Treeta","Banaby","Gastcar","Corean","Monker","Guard","3 Dancing Dogs","Levvy"]
+    global mhptable
+    mhptable = [10,30,40,72,50,440,48,60,74,70,114,680,5,70,70,1500,23000,20,110,80,190,230,150,1250,1600]
+    global monsterid
+    monsterid = 0
+    global areagoto
+    areagoto = [fallen2,fallen2,fallen2,fallen2,fallen2,150,25,18,22,30,35,340,40,46,52,700,1700,70,80,95,150,180,220,300,800]
+    global catacombnum
+    catacombnum = 20
+    global frostinum
+    frostinum = 16
+    global caliconum
+    caliconum = 18
+    global verticanum
+    verticanum = 40
     global geno
     geno = False
-    global equipped
-    equipped = ["Stick", "Band-aid"] # 0 is weapon, 1 is def.
-    global inventory
-    inventory = ["Poppy"] # Inventory
     if "Stick" in equipped:
         global attackmult # Weapons use this
         attackmult = 3
@@ -37,7 +68,7 @@ def init():
     hpcalc()
     global hp
     hp = maxhp # If it drops to 0, you lose
-    start()
+    subroutine()
 
 def hpcalc():
     global maxhp
@@ -154,11 +185,11 @@ def fallen1():
     print("???: 'Hm.. What was that? Oh! My child, I can see you have fallen down.'")
     time.sleep(1.5)
     global MATK # Tutoria's ATK.
-    MATK = 3
+    MATK = 6
     global MHP # Tutoria's HP.
-    MHP = 28
+    MHP = 440
     global MDF # Tutoria's DF.
-    MDF = 2
+    MDF = 1
     print("Tutoria: 'My name is Tutoria. You must be new. This is the Underground.'")
     time.sleep(2)
     print("Tutoria: 'Now, if you would like to follow me..")
@@ -178,7 +209,7 @@ def fallen1():
         fallen2()
 
 def house():
-    global saveplace
+    global subroutine
     os.system('cls' if os.name == 'nt' else 'clear')
     print("* It smells of pie. Caramel and Banana, to be exact.") # Ailbhe no. (* Ailbhe yes.)
     time.sleep(1.5)
@@ -187,7 +218,11 @@ def house():
     time.sleep(1.5)
     if option2.casefold() == "yes":
         print("* The smell of the pie fills them with a certain power.")
-        saveplace = house
+        subroutine = house
+        file = open("Lfile.txt", "w")
+        file.write(f"{subroutine}\n{inventory}\n{equipped}\n{xp}\n{money}")
+        file.close()
+        hp=maxhp
         time.sleep(1.5)
         print("* Current game saved.")
     else: print("* HP not restored.")
@@ -248,9 +283,48 @@ def FTO():
 
 def Attack():
     print("* I will not show the math.")
+    time.sleep(1)
+    damage = round((atk - MDF + random.randint(0,2)) * 2.2) # Undertale's math.
+    MHP = MHP - damage
+    print(f"* They dealt {damage} damage to the monster.")
+    time.sleep(1.5)
+    if MHP <= 0:
+        xp = xp + xpgive[monsterid]
+        area = areagoto[monsterid]
+        money = money + moneygive[monsterid]
+        lvcalc()
+        atkcalc()
+        dfcalc()
+        hpcalc()
+        if area == fallen2:
+            catacombnum = catacombnum - 1
+        area()
+    else:
+        FATK()
+
+
 
 def Act():
     print("* For mercy, or for idiocy.")
+    time.sleep(1.5)
+    if monsterid == 0: # Catacombs 1
+        print("* Check, Support.")
+    elif monsterid == 1: # Catacombs 2
+        print("* Check, Compliment, Scare.")
+    elif monsterid == 2: # Catacombs 3
+        print("* Check, Talk, Isolate.")
+    elif monsterid == 3: # Catacombs 4
+        print("* Check, Eat, Recommend.")
+    elif monsterid == 4: # Catacombs 5
+        print("* Check, Bully, Befriend.")
+    elif monsterid == 5: # Tutoria
+        print("* Check, Talk.")
+    time.sleep(1.5)
+    Aopt = input("* What would you like to do?")
+    time.sleep(1.5)
+    if Aopt.casefold() == "check":
+        print("* ")
+        
 
 
 def Item():
@@ -290,6 +364,7 @@ def Item():
 
 def Mercy():
     print("* Showing their benevolence.")
+    time.sleep(1.5)
 
 def FATK():
     global hp
@@ -297,11 +372,17 @@ def FATK():
     global MATK
     global df
     print("* It is now the enemy's turn to fight them.")
-    hp = hp - (MATK - df/5) # Undertale's Math..?
+    dodge = random.randint(0,2)
+    if dodge == 0:
+        hp = hp
+        time.sleep(1.5)
+        print("* They dodged.") # Exactly what it says on the tin.
+    else:
+        hp = hp - (MATK - df/5) # Undertale's Math..?
+        time.sleep(1.5)
+        print("The enemy dealt ", str(MATK - df/5), " damage.")
     time.sleep(1.5)
-    print("The enemy dealt ", str(MATK - df/5), " damage.")
-    time.sleep(1.5)
-    print(f"* Their HP is now at {hp}.")
+    print(f"* Their HP is now at {hp} out of {maxhp}.")
     time.sleep(1.5)
     if hp > 0:
         FTO()
