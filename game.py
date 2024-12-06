@@ -3,39 +3,71 @@ import sys
 import os
 import random
 import math
+import ast
+
+# Function to write the initial state to the file
+def write_initial_file():
+    # Create and write to file
+    with open("Lfile.txt", "w") as file:
+        subroutine = "start"  # Save the name of the function as a string
+        inventory = ["poppy"]
+        equipped = ["Stick", "Band-aid"]
+        xp = 0
+        money = 0
+        file.write(f"{subroutine}\n{inventory}\n{equipped}\n{xp}\n{money}\n")
 
 def init():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("* If you don't have a file named 'Lfile.txt' in the directory, add it.")
-    time.sleep(2)
     global inventory
     global subroutine
     global equipped
     global money
     global file
-    file = open("Lfile.txt", "r")
-    if file.readline(2) == "": equipped = ["Stick", "Band-aid"] # 0 is weapon, 1 is def.
-    else: equipped = file.readline(2)
-    if file.readline(0) == "": subroutine = init 
-    else: subroutine = file.readline(0)
-    if file.readline(1) == "": inventory = ["poppy"]
-    else: inventory = file.readline(1) # Inventory
-    if file.readline(4) == "": money = 0
-    else: money = file.readline(4)
-    file.close()
+    global xp
+    # Your function mappings
+    areas = {'start': start, 'fallen2': fallen2, 'house': house}
+    if os.path.exists("Lfile.txt"):
+        with open("Lfile.txt", "r") as file:
+            lines = file.readlines()
+            if len(lines) >= 5:
+                subroutine_name = lines[0].strip()  # Read the function name as a string
+                inventory = ast.literal_eval(lines[1].strip())
+                equipped = ast.literal_eval(lines[2].strip())
+                
+                try:
+                    xp = int(lines[3].strip())
+                except ValueError:
+                    xp = 0  # Default value if conversion fails
+
+                try:
+                    money = int(lines[4].strip())
+                except ValueError:
+                    money = 0  # Default value if conversion fails
+
+                # Get the corresponding function
+                subroutine = areas.get(subroutine_name, areas['start'])  # Default to 'start' if not found
+    else:
+        write_initial_file()
+        subroutine = areas['start']  # Set the subroutine for the first run
+        inventory = ["poppy"]
+        equipped = ["Stick", "Band-aid"]
+        xp = 0
+        money = 0
+
+    # After this, call the function and output the state
+    lvcalc()  # Call your level calculation function
     global MATK # Tutoria's old ATK. Also the placeholder.
     MATK = 3
     global MHP # Tutoria's old HP. Also the placeholder.
     MHP = 28
     global MDF # Tutoria's old DF. Also the placeholder.
     MDF = 2
-    areas = [house, fallen2]
     global items
     items = ["poppy","m.candy","b.pie","g.pudding","ginger.man","blacoffee","nice.cream","aprilobster","burger","monkeytail","v.delight","avacadotoast","sw'ore","levvysteak"]
     global xpgive
     xpgive = [2,3,5,6,22,150,25,18,22,30,35,200,40,46,52,500,1500,70,80,95,150,180,220,300,800] # 0-4 = Catacombs norm, 6-10 = Frostin norm,
-    global xp # 12-14 = Calico norm, 17-21 = Vertica norm, 5 = Tutoria, 11 = Impact, 15 = norm Boarstle, 16 = geno Boarstle, 22 = Royal Guards, 23 = 3 Dancing Dogs,
-    xp=0 # 24 = Levvy.
+     # 12-14 = Calico norm, 17-21 = Vertica norm, 5 = Tutoria, 11 = Impact, 15 = norm Boarstle, 16 = geno Boarstle, 22 = Royal Guards, 23 = 3 Dancing Dogs,
+     # 24 = Levvy.
     lvcalc()
     global moneygive
     moneygive = [2,2,2,4,5,0,35,15,12,30,20,0,0,20,30,0,0,40,45,60,60,70,100,105,0]
@@ -218,7 +250,7 @@ def house():
     time.sleep(1.5)
     if option2.casefold() == "yes":
         print("* The smell of the pie fills them with a certain power.")
-        subroutine = house
+        subroutine = 'house'
         file = open("Lfile.txt", "w")
         file.write(f"{subroutine}\n{inventory}\n{equipped}\n{xp}\n{money}")
         file.close()
@@ -246,7 +278,10 @@ def fallen2(): # Speedrunners, hate me!
     time.sleep(1.5)
     if option.casefold() == "yes":
         print("* The falling leaves are a spectacle for them in the spring.")
-        subroutine = fallen2
+        subroutine = 'fallen2'
+        file = open("Lfile.txt", "w")
+        file.write(f"{subroutine}\n{inventory}\n{equipped}\n{xp}\n{money}")
+        file.close()
         time.sleep(1.5)
         print("* Current game saved.")
     else: print("* Game not saved.")
